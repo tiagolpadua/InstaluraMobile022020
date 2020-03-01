@@ -1,29 +1,35 @@
-import React from 'react';
-import {Component} from 'react';
-import {Dimensions, Image, Text, View, FlatList} from 'react-native';
+import React, {Component} from 'react';
+import {FlatList, StyleSheet} from 'react-native';
+import Post from './Post';
 
-const width = Dimensions.get('screen').width;
 export default class Feed extends Component {
+  constructor() {
+    super();
+    this.state = {
+      fotos: [],
+    };
+  }
+
+  componentDidMount() {
+    fetch('https://instalura-api.herokuapp.com/api/public/fotos/rafael')
+      .then(resposta => resposta.json())
+      .then(json => this.setState({fotos: json}));
+  }
+
   render() {
-    const fotos = [
-      {id: 1, usuario: 'rafael'},
-      {id: 2, usuario: 'alberto'},
-      {id: 3, usuario: 'vitor'},
-    ];
     return (
       <FlatList
-        keyExtractor={item => item.id}
-        data={fotos}
-        renderItem={({item}) => (
-          <View>
-            <Text>{item.usuario}</Text>
-            <Image
-              source={require('../../resources/img/alura.png')}
-              style={{width: width, height: width}}
-            />
-          </View>
-        )}
+        style={styles.container}
+        keyExtractor={item => item.id + ''}
+        data={this.state.fotos}
+        renderItem={({item}) => <Post foto={item} />}
       />
     );
   }
 }
+
+const styles = StyleSheet.create({
+  container: {
+    marginTop: 20,
+  },
+});

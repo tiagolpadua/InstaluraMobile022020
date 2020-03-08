@@ -1,12 +1,5 @@
 import React, {Component} from 'react';
-import {
-  Dimensions,
-  Image,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import {Dimensions, Image, StyleSheet, Text, View} from 'react-native';
 import InputComentario from './InputComentario';
 import Likes from './Likes';
 
@@ -16,7 +9,6 @@ export default class Post extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      foto: this.props.foto,
       valorComentario: '',
     };
   }
@@ -33,46 +25,9 @@ export default class Post extends Component {
     );
   }
 
-  like = () => {
-    const {foto} = this.state;
-    let novaLista = [];
-    if (!foto.likeada) {
-      novaLista = [...foto.likers, {login: 'meuUsuario'}];
-    } else {
-      novaLista = foto.likers.filter(liker => {
-        return liker.login !== 'meuUsuario';
-      });
-    }
-    const fotoAtualizada = {
-      ...foto,
-      likeada: !foto.likeada,
-      likers: novaLista,
-    };
-    this.setState({foto: fotoAtualizada});
-  };
-
-  adicionaComentario = (valorComentario, inputComentario) => {
-    if (valorComentario === '') {
-      return;
-    }
-    const novaLista = [
-      ...this.state.foto.comentarios,
-      {
-        id: valorComentario,
-        login: 'meuUsuario',
-        texto: valorComentario,
-      },
-    ];
-    const fotoAtualizada = {
-      ...this.state.foto,
-      comentarios: novaLista,
-    };
-    this.setState({foto: fotoAtualizada});
-    inputComentario.clear();
-  };
-
   render() {
-    const {foto} = this.state;
+    const {foto, likeCallback, comentarioCallback} = this.props;
+
     return (
       <View>
         <View style={styles.cabecalho}>
@@ -81,17 +36,18 @@ export default class Post extends Component {
         </View>
         <Image source={{uri: foto.urlFoto}} style={styles.foto} />
         <View style={styles.rodape}>
-          <Likes foto={foto} likeCallback={this.like} />
+          <Likes foto={foto} likeCallback={likeCallback} />
           {this.exibeLegenda(foto)}
-
           {foto.comentarios.map(comentario => (
             <View style={styles.comentario} key={comentario.id}>
               <Text style={styles.tituloComentario}>{comentario.login}</Text>
               <Text>{comentario.texto}</Text>
             </View>
           ))}
-
-          <InputComentario comentarioCallback={this.adicionaComentario} />
+          <InputComentario
+            idFoto={foto.id}
+            comentarioCallback={comentarioCallback}
+          />
         </View>
       </View>
     );

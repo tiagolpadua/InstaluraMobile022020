@@ -17,7 +17,9 @@ export default class Feed extends Component {
   }
 
   adicionaComentario = (idFoto, valorComentario, inputComentario) => {
-    if (valorComentario === '') return;
+    if (valorComentario === '') {
+      return;
+    }
     const {fotos} = this.state;
     const foto = this.buscaPorId(idFoto);
     const novaLista = [

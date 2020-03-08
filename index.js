@@ -1,8 +1,4 @@
-/**
- * @format
- */
-
 import {AppRegistry} from 'react-native';
-import Feed from './src/components/Feed';
+import Login from './screens/Login';
 
-AppRegistry.registerComponent('InstaluraMobile022020', () => Feed);
+AppRegistry.registerComponent('InstaluraMobile', () => Login);

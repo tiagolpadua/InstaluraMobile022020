@@ -17,20 +17,22 @@ export default class Login extends Component {
   constructor() {
     super();
     this.state = {
-      usuario: '',
-      senha: '',
+      usuario: 'rafael',
+      senha: '123456',
       mensagem: '',
     };
   }
 
   efetuaLogin = () => {
-    const {usuario, senha} = this.state;
+    // Novidade aqui
+    const {navigation} = this.props;
+
     const uri = 'https://instalura-api.herokuapp.com/api/public/login';
     const requestInfo = {
       method: 'POST',
       body: JSON.stringify({
-        login: usuario,
-        senha,
+        login: this.state.usuario,
+        senha: this.state.senha,
       }),
       headers: new Headers({
         'Content-type': 'application/json',
@@ -45,7 +47,10 @@ export default class Login extends Component {
       })
       .then(token => {
         AsyncStorage.setItem('token', token);
-        AsyncStorage.setItem('usuario', usuario);
+        AsyncStorage.setItem('usuario', this.state.usuario);
+
+        // Novidade aqui
+        navigation.navigate('Feed');
       })
       .catch(error => this.setState({mensagem: error.message}));
   };

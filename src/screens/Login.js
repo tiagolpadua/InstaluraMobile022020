@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
+import AsyncStorage from '@react-native-community/async-storage';
+import {CommonActions} from '@react-navigation/native';
 import {
-  AsyncStorage,
   Button,
   Dimensions,
   StyleSheet,
@@ -49,8 +50,12 @@ export default class Login extends Component {
         AsyncStorage.setItem('token', token);
         AsyncStorage.setItem('usuario', this.state.usuario);
 
-        // Novidade aqui
-        navigation.navigate('Feed');
+        navigation.dispatch(
+          CommonActions.reset({
+            index: 0,
+            routes: [{name: 'Feed'}],
+          }),
+        );
       })
       .catch(error => this.setState({mensagem: error.message}));
   };

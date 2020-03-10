@@ -68,6 +68,7 @@ export default class Login extends Component {
 
   render() {
     const {mensagem} = this.state;
+    const {navigation} = this.props;
     return (
       <View style={styles.container}>
         <Text style={styles.titulo}>Instalura</Text>
@@ -86,6 +87,13 @@ export default class Login extends Component {
             onChangeText={texto => this.setState({senha: texto})}
           />
           <Button title="Login" onPress={this.efetuaLogin} />
+
+          <View style={{marginTop: 50}}>
+            <Button
+              title="Temos uma novidade!"
+              onPress={() => navigation.navigate('AluraLingua')}
+            />
+          </View>
         </View>
         <Text style={styles.mensagem}>{mensagem}</Text>
       </View>

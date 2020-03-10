@@ -7,6 +7,7 @@ import 'react-native-gesture-handler';
 import Feed from './src/components/Feed';
 import Login from './src/screens/Login';
 import Splash from './src/screens/Splash';
+import AluraLingua from './src/components/AluraLingua';
 
 const Stack = createStackNavigator();
 
@@ -17,12 +18,17 @@ function App() {
         <Stack.Screen
           name="Splash"
           component={Splash}
-          options={{title: 'Splash'}}
+          options={{title: 'Splash', headerShown: false}}
         />
         <Stack.Screen
           name="Login"
           component={Login}
-          options={{header: () => null}}
+          options={{headerShown: false}}
+        />
+        <Stack.Screen
+          name="AluraLingua"
+          component={AluraLingua}
+          options={{title: 'Novidade para você'}}
         />
         <Stack.Screen
           name="Feed"

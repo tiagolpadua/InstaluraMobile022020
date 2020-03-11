@@ -2,10 +2,18 @@ import React, {Component} from 'react';
 import {Dimensions, Image, StyleSheet, Text, View} from 'react-native';
 import InputComentario from './InputComentario';
 import Likes from './Likes';
+import PropTypes from 'prop-types';
+import fotoType from '../types';
 
 const width = Dimensions.get('screen').width;
 
 export default class Post extends Component {
+  static propTypes = {
+    foto: fotoType.isRequired,
+    likeCallback: PropTypes.func.isRequired,
+    comentarioCallback: PropTypes.func.isRequired,
+  };
+
   constructor(props) {
     super(props);
     this.state = {

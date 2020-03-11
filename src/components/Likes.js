@@ -1,7 +1,14 @@
 import React, {Component} from 'react';
 import {Image, StyleSheet, TouchableOpacity, View, Text} from 'react-native';
+import PropTypes from 'prop-types';
+import fotoType from '../types';
 
 export default class Likes extends Component {
+  static propTypes = {
+    foto: fotoType.isRequired,
+    likeCallback: PropTypes.func.isRequired,
+  };
+
   carregaIcone(likeada) {
     return likeada
       ? require('../../resources/img/s2-checked.png')

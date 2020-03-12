@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<coverage generated="1583971926592" clover="3.2.0">
+  <project timestamp="1583971926592" name="All files">
+    <metrics statements="23" coveredstatements="18" conditionals="6" coveredconditionals="3" methods="9" coveredmethods="6" elements="38" coveredelements="27" complexity="0" loc="23" ncloc="23" packages="3" files="6" classes="6"/>
+    <package name="resources.img">
+      <metrics statements="3" coveredstatements="3" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
+      <file name="s2-checked.png" path="/home/tiago/git/InstaluraMobile022020/resources/img/s2-checked.png">
+        <metrics statements="1" coveredstatements="1" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
+        <line num="1" count="1" type="stmt"/>
+      </file>
+      <file name="s2.png" path="/home/tiago/git/InstaluraMobile022020/resources/img/s2.png">
+        <metrics statements="1" coveredstatements="1" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
+        <line num="1" count="1" type="stmt"/>
+      </file>
+      <file name="send.png" path="/home/tiago/git/InstaluraMobile022020/resources/img/send.png">
+        <metrics statements="1" coveredstatements="1" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
+        <line num="1" count="1" type="stmt"/>
+      </file>
+    </package>
+    <package name="src.components">
+      <metrics statements="19" coveredstatements="14" conditionals="6" coveredconditionals="3" methods="9" coveredmethods="6"/>
+      <file name="InputComentario.js" path="/home/tiago/git/InstaluraMobile022020/src/components/InputComentario.js">
+        <metrics statements="10" coveredstatements="7" conditionals="0" coveredconditionals="0" methods="5" coveredmethods="3"/>
+        <line num="12" count="1" type="stmt"/>
+        <line num="18" count="1" type="stmt"/>
+        <line num="19" count="1" type="stmt"/>
+        <line num="24" count="1" type="stmt"/>
+        <line num="25" count="1" type="stmt"/>
+        <line num="30" count="1" type="stmt"/>
+        <line num="31" count="0" type="stmt"/>
+        <line num="36" count="0" type="stmt"/>
+        <line num="41" count="0" type="stmt"/>
+        <line num="52" count="1" type="stmt"/>
+      </file>
+      <file name="Likes.js" path="/home/tiago/git/InstaluraMobile022020/src/components/Likes.js">
+        <metrics statements="9" coveredstatements="7" conditionals="6" coveredconditionals="3" methods="4" coveredmethods="3"/>
+        <line num="7" count="1" type="stmt"/>
+        <line num="13" count="2" type="cond" truecount="2" falsecount="0"/>
+        <line num="19" count="2" type="cond" truecount="1" falsecount="1"/>
+        <line num="20" count="2" type="stmt"/>
+        <line num="22" count="0" type="stmt"/>
+        <line num="30" count="2" type="stmt"/>
+        <line num="32" count="2" type="stmt"/>
+        <line num="34" count="0" type="stmt"/>
+        <line num="45" count="1" type="stmt"/>
+      </file>
+    </package>
+    <package name="src.types">
+      <metrics statements="1" coveredstatements="1" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
+      <file name="index.js" path="/home/tiago/git/InstaluraMobile022020/src/types/index.js">
+        <metrics statements="1" coveredstatements="1" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
+        <line num="3" count="1" type="stmt"/>
+      </file>
+    </package>
+  </project>
+</coverage>

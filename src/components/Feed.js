@@ -4,6 +4,8 @@ import AsyncStorage from '@react-native-community/async-storage';
 import Post from './Post';
 import InstaluraFetchService from '../services/InstaluraFetchService';
 import Notificacao from '../api/Notificacao';
+import HeaderUsuario from './HeaderUsuario';
+import {ScrollView} from 'react-native-gesture-handler';
 
 export default class Feed extends Component {
   constructor() {
@@ -15,15 +17,29 @@ export default class Feed extends Component {
   }
 
   carregarFotos = () => {
-    InstaluraFetchService.get('/fotos')
-      .then(json => {
-        this.setState({fotos: json});
-      })
+    const {params} = this.props.route;
+    let uri = '/fotos';
+
+    if (params && params.usuario) {
+      uri = `/public/fotos/${params.usuario}`;
+    }
+
+    InstaluraFetchService.get(uri)
+      .then(json => this.setState({fotos: json}))
       .catch(e => this.setState({falhaCarregamento: true}));
   };
 
+  exibeHeader() {
+    const {params} = this.props.route;
+    if (params) {
+      return <HeaderUsuario {...params} posts={this.state.fotos.length} />;
+    }
+  }
+
   componentDidMount() {
-    this.carregarFotos();
+    this.props.navigation.addListener('focus', () => {
+      this.carregarFotos();
+    });
   }
 
   adicionaComentario = (idFoto, valorComentario, inputComentario) => {
@@ -95,6 +111,15 @@ export default class Feed extends Component {
     return fotos.find(f => f.id === idFoto);
   }
 
+  verPerfilUsuario = idFoto => {
+    const foto = this.buscaPorId(idFoto);
+
+    this.props.navigation.navigate('PerfilUsuario', {
+      usuario: foto.loginUsuario,
+      fotoDePerfil: foto.urlPerfil,
+    });
+  };
+
   render() {
     const {falhaCarregamento} = this.state;
     return (
@@ -110,8 +135,10 @@ export default class Feed extends Component {
                 foto={item}
                 likeCallback={this.like}
                 comentarioCallback={this.adicionaComentario}
+                verPerfilCallback={this.verPerfilUsuario}
               />
             )}
+            ListHeaderComponent={this.exibeHeader()}
           />
         )}
       </View>

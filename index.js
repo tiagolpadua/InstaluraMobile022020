@@ -47,6 +47,13 @@ function App() {
             ),
           })}
         />
+        <Stack.Screen
+          name="PerfilUsuario"
+          component={Feed}
+          options={({route}) => ({
+            title: route.params.usuario,
+          })}
+        />
       </Stack.Navigator>
     </NavigationContainer>
   );

@@ -4,6 +4,7 @@ import InputComentario from './InputComentario';
 import Likes from './Likes';
 import PropTypes from 'prop-types';
 import fotoType from '../types';
+import {TouchableOpacity} from 'react-native-gesture-handler';
 
 const width = Dimensions.get('screen').width;
 
@@ -34,14 +35,21 @@ export default class Post extends Component {
   }
 
   render() {
-    const {foto, likeCallback, comentarioCallback} = this.props;
+    const {
+      foto,
+      likeCallback,
+      comentarioCallback,
+      verPerfilCallback,
+    } = this.props;
 
     return (
       <View>
-        <View style={styles.cabecalho}>
+        <TouchableOpacity
+          style={styles.cabecalho}
+          onPress={() => verPerfilCallback(foto.id)}>
           <Image source={{uri: foto.urlPerfil}} style={styles.fotoDePerfil} />
           <Text>{foto.loginUsuario}</Text>
-        </View>
+        </TouchableOpacity>
         <Image source={{uri: foto.urlFoto}} style={styles.foto} />
         <View style={styles.rodape}>
           <Likes foto={foto} likeCallback={likeCallback} />

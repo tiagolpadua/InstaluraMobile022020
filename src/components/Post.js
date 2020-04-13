@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {Dimensions, Image, StyleSheet, Text, View} from 'react-native';
-import InputComentario from './InputComentario';
+import InputComentario from './InputComentarioHook';
 import Likes from './Likes';
 import PropTypes from 'prop-types';
 import fotoType from '../types';

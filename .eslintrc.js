@@ -5,4 +5,5 @@ module.exports = {
     fetch: false,
     Headers: false,
   },
+  plugins: ['react-hooks'],
 };

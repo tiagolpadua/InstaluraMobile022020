@@ -1,10 +1,11 @@
 import AsyncStorage from '@react-native-community/async-storage';
-import {useState} from 'react';
+import {useState, useEffect} from 'react';
 import Notificacao from '../api/Notificacao';
 import InstaluraFetchService from '../services/InstaluraFetchService';
 
-export default function useFotos() {
+export default function useFotos(route) {
   const [items, setItems] = useState([]);
+  const [falhaCarregamento, setFalhaCarregamento] = useState(false);
 
   const buscaPorId = idFoto => {
     return items.find(f => f.id === idFoto);
@@ -47,9 +48,57 @@ export default function useFotos() {
     });
   };
 
+  const adicionaComentario = (idFoto, valorComentario, inputComentario) => {
+    if (valorComentario === '') {
+      return;
+    }
+
+    const foto = buscaPorId(idFoto);
+
+    const novoComentario = {
+      texto: valorComentario,
+    };
+
+    InstaluraFetchService.post(`/fotos/${idFoto}/comment`, novoComentario)
+      .then(comentario => [...foto.comentarios, comentario])
+      .then(novaLista => {
+        const fotoAtualizada = {
+          ...foto,
+          comentarios: novaLista,
+        };
+        atualizaFotos(fotoAtualizada);
+        inputComentario.clear();
+      })
+      .catch(e => {
+        atualizaFotos(foto);
+        Notificacao.exibe('Ops..', 'Algo deu errado ao comentar');
+      });
+  };
+
+  const carregarFotos = () => {
+    const {params} = route;
+    let uri = '/fotos';
+
+    if (params && params.usuario) {
+      uri = `/public/fotos/${params.usuario}`;
+    }
+
+    InstaluraFetchService.get(uri)
+      .then(json => setItems(json))
+      .catch(e => setFalhaCarregamento(true));
+  };
+
+  useEffect(() => {
+    carregarFotos();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   return {
+    adicionaComentario,
+    buscaPorId,
+    carregarFotos,
+    falhaCarregamento,
     items,
-    setItems,
     like,
   };
 }

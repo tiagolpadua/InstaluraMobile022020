@@ -7,9 +7,7 @@ export default function useFotos(route) {
   const [items, setItems] = useState([]);
   const [falhaCarregamento, setFalhaCarregamento] = useState(false);
 
-  const buscaPorId = idFoto => {
-    return items.find(f => f.id === idFoto);
-  };
+  const buscaPorId = idFoto => items.find(f => f.id === idFoto);
 
   const atualizaFotos = fotoAtualizada => {
     const fotosAtualizadas = items.map(f =>

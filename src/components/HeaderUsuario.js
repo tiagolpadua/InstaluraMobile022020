@@ -1,25 +1,22 @@
-import React, {Component} from 'react';
-import {StyleSheet, Text, View, Image} from 'react-native';
+import React from 'react';
+import {Image, StyleSheet, Text, View} from 'react-native';
 
-export default class HeaderUsuario extends Component {
-  render() {
-    return (
-      <View style={styles.container}>
-        <View style={styles.painelFoto}>
-          <Image
-            style={styles.fotoDoPerfil}
-            source={{uri: this.props.fotoDePerfil}}
-          />
+export default function HeaderUsuario(props) {
+  const {fotoDePerfil, posts, usuario} = props;
 
-          <View style={styles.usuarioInfo}>
-            <Text style={styles.posts}>{this.props.posts}</Text>
-            <Text style={styles.texto}>publicações</Text>
-          </View>
+  return (
+    <View style={styles.container}>
+      <View style={styles.painelFoto}>
+        <Image style={styles.fotoDoPerfil} source={{uri: fotoDePerfil}} />
+
+        <View style={styles.usuarioInfo}>
+          <Text style={styles.posts}>{posts}</Text>
+          <Text style={styles.texto}>publicações</Text>
         </View>
-        <Text style={styles.nomeDeUsuario}>{this.props.usuario}</Text>
       </View>
-    );
-  }
+      <Text style={styles.nomeDeUsuario}>{usuario}</Text>
+    </View>
+  );
 }
 
 const styles = StyleSheet.create({

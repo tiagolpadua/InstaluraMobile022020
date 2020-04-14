@@ -1,74 +1,53 @@
-import React, {Component} from 'react';
+import React from 'react';
 import {Dimensions, Image, StyleSheet, Text, View} from 'react-native';
-import InputComentario from './InputComentarioHook';
-import Likes from './Likes';
-import PropTypes from 'prop-types';
-import fotoType from '../types';
 import {TouchableOpacity} from 'react-native-gesture-handler';
+import InputComentario from './InputComentario';
+import Likes from './Likes';
 
 const width = Dimensions.get('screen').width;
 
-export default class Post extends Component {
-  static propTypes = {
-    foto: fotoType.isRequired,
-    likeCallback: PropTypes.func.isRequired,
-    comentarioCallback: PropTypes.func.isRequired,
-  };
-
-  constructor(props) {
-    super(props);
-    this.state = {
-      valorComentario: '',
-    };
+function exibeLegenda(foto) {
+  if (foto.comentario === '') {
+    return;
   }
-
-  exibeLegenda(foto) {
-    if (foto.comentario === '') {
-      return;
-    }
-    return (
-      <View style={styles.comentario}>
-        <Text style={styles.tituloComentario}>{foto.loginUsuario}</Text>
-        <Text>{foto.comentario}</Text>
-      </View>
-    );
-  }
-
-  render() {
-    const {
-      foto,
-      likeCallback,
-      comentarioCallback,
-      verPerfilCallback,
-    } = this.props;
-
-    return (
-      <View>
-        <TouchableOpacity
-          style={styles.cabecalho}
-          onPress={() => verPerfilCallback(foto.id)}>
-          <Image source={{uri: foto.urlPerfil}} style={styles.fotoDePerfil} />
-          <Text>{foto.loginUsuario}</Text>
-        </TouchableOpacity>
-        <Image source={{uri: foto.urlFoto}} style={styles.foto} />
-        <View style={styles.rodape}>
-          <Likes foto={foto} likeCallback={likeCallback} />
-          {this.exibeLegenda(foto)}
-          {foto.comentarios.map(comentario => (
-            <View style={styles.comentario} key={comentario.id}>
-              <Text style={styles.tituloComentario}>{comentario.login}</Text>
-              <Text>{comentario.texto}</Text>
-            </View>
-          ))}
-          <InputComentario
-            idFoto={foto.id}
-            comentarioCallback={comentarioCallback}
-          />
-        </View>
-      </View>
-    );
-  }
+  return (
+    <View style={styles.comentario}>
+      <Text style={styles.tituloComentario}>{foto.loginUsuario}</Text>
+      <Text>{foto.comentario}</Text>
+    </View>
+  );
 }
+
+export default function Post(props) {
+  const {foto, likeCallback, comentarioCallback, verPerfilCallback} = props;
+
+  return (
+    <View>
+      <TouchableOpacity
+        style={styles.cabecalho}
+        onPress={() => verPerfilCallback(foto.id)}>
+        <Image source={{uri: foto.urlPerfil}} style={styles.fotoDePerfil} />
+        <Text>{foto.loginUsuario}</Text>
+      </TouchableOpacity>
+      <Image source={{uri: foto.urlFoto}} style={styles.foto} />
+      <View style={styles.rodape}>
+        <Likes foto={foto} likeCallback={likeCallback} />
+        {exibeLegenda(foto)}
+        {foto.comentarios.map(comentario => (
+          <View style={styles.comentario} key={comentario.id}>
+            <Text style={styles.tituloComentario}>{comentario.login}</Text>
+            <Text>{comentario.texto}</Text>
+          </View>
+        ))}
+        <InputComentario
+          idFoto={foto.id}
+          comentarioCallback={comentarioCallback}
+        />
+      </View>
+    </View>
+  );
+}
+
 const styles = StyleSheet.create({
   cabecalho: {
     margin: 10,

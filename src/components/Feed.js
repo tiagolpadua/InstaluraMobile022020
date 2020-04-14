@@ -1,77 +1,29 @@
-import React, {Component} from 'react';
-import {FlatList, Button, View} from 'react-native';
-import AsyncStorage from '@react-native-community/async-storage';
-import Post from './Post';
-import InstaluraFetchService from '../services/InstaluraFetchService';
+import React, {useEffect, useState} from 'react';
+import {Button, FlatList, View} from 'react-native';
 import Notificacao from '../api/Notificacao';
+import InstaluraFetchService from '../services/InstaluraFetchService';
 import HeaderUsuario from './HeaderUsuario';
-import {ScrollView} from 'react-native-gesture-handler';
+import Post from './Post';
+import AsyncStorage from '@react-native-community/async-storage';
 
-export default class Feed extends Component {
-  constructor() {
-    super();
-    this.state = {
-      fotos: [],
-      falhaCarregamento: false,
-    };
-  }
+export default function Feed(props) {
+  const [fotos, setFotos] = useState([]);
+  const [falhaCarregamento, setFalhaCarregamento] = useState(false);
 
-  carregarFotos = () => {
-    const {params} = this.props.route;
-    let uri = '/fotos';
-
-    if (params && params.usuario) {
-      uri = `/public/fotos/${params.usuario}`;
-    }
-
-    InstaluraFetchService.get(uri)
-      .then(json => this.setState({fotos: json}))
-      .catch(e => this.setState({falhaCarregamento: true}));
+  const buscaPorId = idFoto => {
+    return fotos.find(f => f.id === idFoto);
   };
 
-  exibeHeader() {
-    const {params} = this.props.route;
-    if (params) {
-      return <HeaderUsuario {...params} posts={this.state.fotos.length} />;
-    }
-  }
-
-  componentDidMount() {
-    this.props.navigation.addListener('focus', () => {
-      this.carregarFotos();
-    });
-  }
-
-  adicionaComentario = (idFoto, valorComentario, inputComentario) => {
-    if (valorComentario === '') {
-      return;
-    }
-
-    const foto = this.buscaPorId(idFoto);
-
-    const novoComentario = {
-      texto: valorComentario,
-    };
-
-    InstaluraFetchService.post(`/fotos/${idFoto}/comment`, novoComentario)
-      .then(comentario => [...foto.comentarios, comentario])
-      .then(novaLista => {
-        const fotoAtualizada = {
-          ...foto,
-          comentarios: novaLista,
-        };
-        this.atualizaFotos(fotoAtualizada);
-        inputComentario.clear();
-      })
-      .catch(e => {
-        this.atualizaFotos(foto);
-        Notificacao.exibe('Ops..', 'Algo deu errado ao comentar');
-      });
+  const atualizaFotos = fotoAtualizada => {
+    const fotosAtualizadas = fotos.map(f =>
+      f.id === fotoAtualizada.id ? fotoAtualizada : f,
+    );
+    setFotos(fotosAtualizadas);
   };
 
-  like = idFoto => {
-    const foto = this.buscaPorId(idFoto);
-    const listaOriginal = this.state.fotos;
+  const like = idFoto => {
+    const foto = buscaPorId(idFoto);
+    const listaOriginal = fotos;
     AsyncStorage.getItem('usuario')
       .then(usuarioLogado => {
         let novaLista = [];
@@ -90,58 +42,95 @@ export default class Feed extends Component {
           likeada: !foto.likeada,
           likers: novaLista,
         };
-        this.atualizaFotos(fotoAtualizada);
+        atualizaFotos(fotoAtualizada);
       });
+
     InstaluraFetchService.post(`/fotos/${idFoto}/like`).catch(e => {
-      this.setState({fotos: listaOriginal});
+      setFotos(listaOriginal);
       Notificacao.exibe('Ops..', 'Algo deu errado ao curtir');
     });
   };
 
-  atualizaFotos = fotoAtualizada => {
-    const {fotos} = this.state;
-    const fotosAtualizadas = fotos.map(f =>
-      f.id === fotoAtualizada.id ? fotoAtualizada : f,
-    );
-    this.setState({fotos: fotosAtualizadas});
+  const adicionaComentario = (idFoto, valorComentario, inputComentario) => {
+    if (valorComentario === '') {
+      return;
+    }
+
+    const foto = buscaPorId(idFoto);
+
+    const novoComentario = {
+      texto: valorComentario,
+    };
+
+    InstaluraFetchService.post(`/fotos/${idFoto}/comment`, novoComentario)
+      .then(comentario => [...foto.comentarios, comentario])
+      .then(novaLista => {
+        const fotoAtualizada = {
+          ...foto,
+          comentarios: novaLista,
+        };
+        atualizaFotos(fotoAtualizada);
+        inputComentario.clear();
+      })
+      .catch(e => {
+        atualizaFotos(foto);
+        Notificacao.exibe('Ops..', 'Algo deu errado ao comentar');
+      });
   };
 
-  buscaPorId(idFoto) {
-    const {fotos} = this.state;
-    return fotos.find(f => f.id === idFoto);
-  }
+  const verPerfilUsuario = idFoto => {
+    const foto = buscaPorId(idFoto);
 
-  verPerfilUsuario = idFoto => {
-    const foto = this.buscaPorId(idFoto);
-
-    this.props.navigation.navigate('PerfilUsuario', {
+    props.navigation.navigate('PerfilUsuario', {
       usuario: foto.loginUsuario,
       fotoDePerfil: foto.urlPerfil,
     });
   };
 
-  render() {
-    const {falhaCarregamento} = this.state;
-    return (
-      <View>
-        {falhaCarregamento ? (
-          <Button onPress={this.carregarFotos} title="Recarregar" />
-        ) : (
-          <FlatList
-            keyExtractor={item => item.id + ''}
-            data={this.state.fotos}
-            renderItem={({item}) => (
-              <Post
-                foto={item}
-                likeCallback={this.like}
-                comentarioCallback={this.adicionaComentario}
-                verPerfilCallback={this.verPerfilUsuario}
-              />
-            )}
-            ListHeaderComponent={this.exibeHeader()}
-          />
-        )}
-      </View>
-    );
-  }
+  const exibeHeader = () => {
+    const {params} = props.route;
+    if (params) {
+      return <HeaderUsuario {...params} posts={fotos.length} />;
+    }
+  };
+
+  const carregarFotos = () => {
+    const {params} = props.route;
+    let uri = '/fotos';
+
+    if (params && params.usuario) {
+      uri = `/public/fotos/${params.usuario}`;
+    }
+
+    InstaluraFetchService.get(uri)
+      .then(json => setFotos(json))
+      .catch(e => setFalhaCarregamento(true));
+  };
+
+  useEffect(() => {
+    carregarFotos();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  return (
+    <View>
+      {falhaCarregamento ? (
+        <Button onPress={carregarFotos} title="Recarregar" />
+      ) : (
+        <FlatList
+          keyExtractor={item => item.id + ''}
+          data={fotos}
+          renderItem={({item}) => (
+            <Post
+              foto={item}
+              comentarioCallback={adicionaComentario}
+              likeCallback={like}
+              verPerfilCallback={verPerfilUsuario}
+            />
+          )}
+          ListHeaderComponent={exibeHeader()}
+        />
+      )}
+    </View>
+  );
 }

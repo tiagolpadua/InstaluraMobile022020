@@ -1,5 +1,6 @@
-import React from 'react';
+import React, {useContext} from 'react';
 import {Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {FotosContext} from './FotosContext';
 
 function carregaIcone(likeada) {
   return likeada
@@ -19,11 +20,13 @@ function exibeLikes(likers) {
 }
 
 export default function Likes(props) {
-  const {foto, likeCallback} = props;
+  const fotos = useContext(FotosContext);
+
+  const {foto} = props;
 
   return (
     <View>
-      <TouchableOpacity onPress={() => likeCallback(foto.id)}>
+      <TouchableOpacity onPress={() => fotos.like(foto.id)}>
         <Image style={styles.botaoDeLike} source={carregaIcone(foto.likeada)} />
       </TouchableOpacity>
       {exibeLikes(foto.likers)}

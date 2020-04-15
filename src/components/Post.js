@@ -19,7 +19,7 @@ function exibeLegenda(foto) {
 }
 
 export default function Post(props) {
-  const {foto, likeCallback, comentarioCallback, verPerfilCallback} = props;
+  const {foto, verPerfilCallback} = props;
 
   return (
     <View>
@@ -31,7 +31,7 @@ export default function Post(props) {
       </TouchableOpacity>
       <Image source={{uri: foto.urlFoto}} style={styles.foto} />
       <View style={styles.rodape}>
-        <Likes foto={foto} likeCallback={likeCallback} />
+        <Likes foto={foto} />
         {exibeLegenda(foto)}
         {foto.comentarios.map(comentario => (
           <View style={styles.comentario} key={comentario.id}>
@@ -39,10 +39,7 @@ export default function Post(props) {
             <Text>{comentario.texto}</Text>
           </View>
         ))}
-        <InputComentario
-          idFoto={foto.id}
-          comentarioCallback={comentarioCallback}
-        />
+        <InputComentario idFoto={foto.id} />
       </View>
     </View>
   );

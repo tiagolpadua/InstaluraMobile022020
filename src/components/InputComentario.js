@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useContext} from 'react';
 import {
   Image,
   StyleSheet,
@@ -6,9 +6,11 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import FotosContext from './FotosContext';
 
 export default function InputComentario(props) {
-  const {comentarioCallback, idFoto} = props;
+  const fotos = useContext(FotosContext);
+  const {idFoto} = props;
   const [valorComentario, setValorComentario] = useState('');
   let inputComentario;
 
@@ -23,7 +25,7 @@ export default function InputComentario(props) {
       />
       <TouchableOpacity
         onPress={() => {
-          comentarioCallback(idFoto, valorComentario, inputComentario);
+          fotos.adicionaComentario(idFoto, valorComentario, inputComentario);
           setValorComentario('');
         }}>
         <Image

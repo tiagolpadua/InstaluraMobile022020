@@ -1,6 +1,6 @@
-import React, {Component} from 'react';
 import AsyncStorage from '@react-native-community/async-storage';
 import {CommonActions} from '@react-navigation/native';
+import React, {useState} from 'react';
 import {
   Button,
   Dimensions,
@@ -14,31 +14,29 @@ import {
 // https://github.com/facebook/react-native/issues/20841#issuecomment-427289537
 
 const {width} = Dimensions.get('screen');
-export default class Login extends Component {
-  constructor() {
-    super();
-    this.state = {
-      usuario: 'rafael',
-      senha: '123456',
-      mensagem: '',
-    };
-  }
 
-  efetuaLogin = () => {
+export default function Login(props) {
+  const [usuario, setUsuario] = useState('rafael');
+  const [senha, setSenha] = useState('123456');
+  const [mensagem, setMensagem] = useState('');
+
+  const {navigation} = props;
+
+  const efetuaLogin = () => {
     // Novidade aqui
-    const {navigation} = this.props;
 
     const uri = 'https://instalura-api.herokuapp.com/api/public/login';
     const requestInfo = {
       method: 'POST',
       body: JSON.stringify({
-        login: this.state.usuario,
-        senha: this.state.senha,
+        login: usuario,
+        senha: senha,
       }),
       headers: new Headers({
         'Content-type': 'application/json',
       }),
     };
+
     fetch(uri, requestInfo)
       .then(response => {
         if (response.ok) {
@@ -48,7 +46,7 @@ export default class Login extends Component {
       })
       .then(token => {
         AsyncStorage.setItem('token', token);
-        AsyncStorage.setItem('usuario', this.state.usuario);
+        AsyncStorage.setItem('usuario', usuario);
 
         navigation.dispatch(
           CommonActions.reset({
@@ -57,51 +55,44 @@ export default class Login extends Component {
           }),
         );
       })
-      .catch(error => this.setState({mensagem: error.message}));
+      .catch(error => setMensagem(error.message));
   };
 
-  logout = () => {
-    AsyncStorage.removeItem('usuario');
-    AsyncStorage.removeItem('token');
-    // ir para a tela de logout
-  };
+  return (
+    <View style={styles.container}>
+      <Text style={styles.titulo}>Instalura</Text>
+      <View style={styles.form}>
+        <TextInput
+          style={styles.input}
+          autoCapitalize="none"
+          placeholder="Usuário..."
+          onChangeText={texto => setUsuario(texto)}
+        />
+        <TextInput
+          style={styles.input}
+          autoCapitalize="none"
+          secureTextEntry
+          placeholder="Senha..."
+          onChangeText={texto => setSenha(texto)}
+        />
+        <Button title="Login" onPress={efetuaLogin} />
 
-  render() {
-    const {mensagem} = this.state;
-    const {navigation} = this.props;
-    return (
-      <View style={styles.container}>
-        <Text style={styles.titulo}>Instalura</Text>
-        <View style={styles.form}>
-          <TextInput
-            style={styles.input}
-            autoCapitalize="none"
-            placeholder="Usuário..."
-            onChangeText={texto => this.setState({usuario: texto})}
+        <View style={styles.novidade}>
+          <Button
+            title="Temos uma novidade!"
+            onPress={() => navigation.navigate('AluraLingua')}
           />
-          <TextInput
-            style={styles.input}
-            autoCapitalize="none"
-            secureTextEntry
-            placeholder="Senha..."
-            onChangeText={texto => this.setState({senha: texto})}
-          />
-          <Button title="Login" onPress={this.efetuaLogin} />
-
-          <View style={{marginTop: 50}}>
-            <Button
-              title="Temos uma novidade!"
-              onPress={() => navigation.navigate('AluraLingua')}
-            />
-          </View>
         </View>
-        <Text style={styles.mensagem}>{mensagem}</Text>
       </View>
-    );
-  }
+      <Text style={styles.mensagem}>{mensagem}</Text>
+    </View>
+  );
 }
 
 const styles = StyleSheet.create({
+  novidade: {
+    marginTop: 50,
+  },
   container: {
     flex: 1,
     alignItems: 'center',

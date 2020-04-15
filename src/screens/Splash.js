@@ -1,14 +1,14 @@
-import React, {Component} from 'react';
 import AsyncStorage from '@react-native-community/async-storage';
 import {CommonActions} from '@react-navigation/native';
+import React, {useEffect} from 'react';
 import {StyleSheet, Text, View, YellowBox} from 'react-native';
 
 YellowBox.ignoreWarnings(['Require cycle:']);
 
-export default class Splash extends Component {
-  componentDidMount() {
+export default function Splash(props) {
+  useEffect(() => {
     AsyncStorage.getItem('token').then(token => {
-      const {navigation} = this.props;
+      const {navigation} = props;
 
       let initial;
       if (token) {
@@ -24,15 +24,14 @@ export default class Splash extends Component {
         }),
       );
     });
-  }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
-  render() {
-    return (
-      <View style={styles.container}>
-        <Text style={styles.titulo}>Instalura</Text>
-      </View>
-    );
-  }
+  return (
+    <View style={styles.container}>
+      <Text style={styles.titulo}>Instalura</Text>
+    </View>
+  );
 }
 const styles = StyleSheet.create({
   container: {
